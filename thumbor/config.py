@@ -194,12 +194,18 @@ Config.define(
 Config.define(
     'FILE_STORAGE_ROOT_PATH', join(tempfile.gettempdir(), 'thumbor', 'storage'),
     'The root path where the File Storage will try to find images', 'File Storage')
+Config.define(
+    'FILE_STORAGE_PUBLIC_ROOT_PATH', join(tempfile.gettempdir(), 'thumbor', 'storage'),
+    'The root path where the File Storage will try to find images', 'File Storage')
 
 # PHOTO UPLOAD OPTIONS
 Config.define('UPLOAD_MAX_SIZE', 0, "Max size in Kb for images uploaded to thumbor", 'Upload')
 Config.define('UPLOAD_ENABLED', False, 'Indicates whether thumbor should enable File uploads', 'Upload')
 Config.define(
     'UPLOAD_PHOTO_STORAGE', 'thumbor.storages.file_storage',
+    'The type of storage to store uploaded images with', 'Upload')
+Config.define(
+    'UPLOAD_PHOTO_PUBLIC_STORAGE', 'thumbor.storages.file_public_storage',
     'The type of storage to store uploaded images with', 'Upload')
 Config.define('UPLOAD_DELETE_ALLOWED', False, 'Indicates whether image deletion should be allowed', 'Upload')
 Config.define('UPLOAD_PUT_ALLOWED', False, 'Indicates whether image overwrite should be allowed', 'Upload')

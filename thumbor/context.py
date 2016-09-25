@@ -211,6 +211,10 @@ class ContextImporter:
         if importer.storage:
             self.storage = importer.storage(context)
 
+        self.storage_public = None
+        if importer.storage_public:
+            self.storage_public = importer.storage_public(context)
+
         self.result_storage = None
         if importer.result_storage:
             self.result_storage = importer.result_storage(context)
@@ -218,6 +222,10 @@ class ContextImporter:
         self.upload_photo_storage = None
         if importer.upload_photo_storage:
             self.upload_photo_storage = importer.upload_photo_storage(context)
+
+        self.upload_photo_public_storage = None
+        if importer.upload_photo_public_storage:
+            self.upload_photo_public_storage = importer.upload_photo_public_storage(context)
 
         self.loader = importer.loader
         self.detectors = importer.detectors

@@ -31,7 +31,9 @@ class Importer:
         self.loader = None
         self.url_signer = None
         self.upload_photo_storage = None
+        self.upload_photo_public_storage = None
         self.storage = None
+        self.storage_public = None
         self.metrics = None
         self.result_storage = None
         self.detectors = []
@@ -44,7 +46,7 @@ class Importer:
 
     def import_modules(self):
         self.config.validates_presence_of(
-            'ENGINE', 'GIF_ENGINE', 'LOADER', 'STORAGE', 'DETECTORS',
+            'ENGINE', 'GIF_ENGINE', 'LOADER', 'STORAGE', 'STORAGE_PUBLIC', 'DETECTORS',
             'FILTERS', 'URL_SIGNER', 'METRICS'
         )
 
@@ -52,6 +54,7 @@ class Importer:
         self.import_item('GIF_ENGINE', 'Engine')
         self.import_item('LOADER')
         self.import_item('STORAGE', 'Storage')
+        self.import_item('STORAGE_PUBLIC', 'Storage')
         self.import_item('METRICS', 'Metrics')
         self.import_item('DETECTORS', 'Detector', is_multiple=True)
         self.import_item('FILTERS', 'Filter', is_multiple=True, ignore_errors=True)
@@ -63,6 +66,9 @@ class Importer:
 
         if self.config.UPLOAD_PHOTO_STORAGE:
             self.import_item('UPLOAD_PHOTO_STORAGE', 'Storage')
+
+        if self.config.UPLOAD_PHOTO_PUBLIC_STORAGE:
+            self.import_item('UPLOAD_PHOTO_PUBLIC_STORAGE', 'Storage')
 
         if self.config.USE_CUSTOM_ERROR_HANDLING:
             self.import_item('ERROR_HANDLER_MODULE', 'ErrorHandler')

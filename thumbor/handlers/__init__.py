@@ -646,3 +646,42 @@ class ImageApiHandler(ContextHandler):
     def write_file(self, id, body):
         storage = self.context.modules.upload_photo_storage
         storage.put(id, body)
+
+
+class ImagePublicApiHandler(ContextHandler):
+
+    def validate(self, body):
+        conf = self.context.config
+        mime = BaseEngine.get_mimetype(body)
+
+        if mime == 'image/gif' and self.context.config.USE_GIFSICLE_ENGINE:
+            engine = self.context.modules.gif_engine
+        else:
+            engine = self.context.modules.engine
+
+        # Check if image is valid
+        try:
+            engine.load(body, None)
+        except IOError:
+            self._error(415, 'Unsupported Media Type')
+            return False
+
+        # Check weight constraints
+        if (conf.UPLOAD_MAX_SIZE != 0 and len(self.request.body) > conf.UPLOAD_MAX_SIZE):
+            self._error(
+                412,
+                'Image exceed max weight (Expected : %s, Actual : %s)' % (conf.UPLOAD_MAX_SIZE, len(self.request.body)))
+            return False
+
+        # Check size constraints
+        size = engine.size
+        if (conf.MIN_WIDTH > size[0] or conf.MIN_HEIGHT > size[1]):
+            self._error(
+                412,
+                'Image is too small (Expected: %s/%s , Actual : %s/%s) % (conf.MIN_WIDTH, conf.MIN_HEIGHT, size[0], size[1])')
+            return False
+        return True
+
+    def write_file(self, id, body):
+        storage = self.context.modules.upload_photo_public_storage
+        storage.put(id, body)

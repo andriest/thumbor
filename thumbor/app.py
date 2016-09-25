@@ -12,10 +12,10 @@ import tornado.ioloop
 
 from thumbor.handlers.blacklist import BlacklistHandler
 from thumbor.handlers.healthcheck import HealthcheckHandler
-from thumbor.handlers.upload import ImageUploadHandler
-from thumbor.handlers.image_resource import ImageResourceHandler
+from thumbor.handlers.upload import ImageUploadHandler, ImagePublicUploadHandler
+from thumbor.handlers.image_resource import ImageResourceHandler, ImagePublicResourceHandler
+from thumbor.handlers.imaging import ImagingHandler, ImagingPublicHandler
 from thumbor.url import Url
-from thumbor.handlers.imaging import ImagingHandler
 
 
 class ThumborServiceApp(tornado.web.Application):
@@ -40,6 +40,14 @@ class ThumborServiceApp(tornado.web.Application):
                 (r'/image/(.*)', ImageResourceHandler, {'context': self.context})
             )
 
+            handlers.append(
+                (r'/public', ImagePublicUploadHandler, {'context': self.context})
+            )
+
+            handlers.append(
+                (r'/public/(.*)', ImagePublicResourceHandler, {'context': self.context})
+            )
+
         if self.context.config.USE_BLACKLIST:
             handlers.append(
                 (r'/blacklist', BlacklistHandler, {'context': self.context})
@@ -48,6 +56,10 @@ class ThumborServiceApp(tornado.web.Application):
         # Imaging handler (GET)
         handlers.append(
             (Url.regex(), ImagingHandler, {'context': self.context})
+        )
+
+        handlers.append(
+            (Url.regex(), ImagingPublicHandler, {'context': self.context})
         )
 
         return handlers
